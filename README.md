@@ -32,3 +32,36 @@ on proximity which gets added to IR Score. The documents are sorted by their IR 
 
 > **Note:** The project folder must contain the directories named "ForwardBarrels" and "InvertedBarrels". A portion of the dataset is given in folder "data"
 which contains files in json format.
+
+## How to run
+1. Make sure you have Python 3 installed.
+2. Create a virtual environment in the project root:
+   ```
+   python -m venv venv
+   ```
+3. Activate the virtual environment:
+   - Windows (PowerShell):
+     ```
+     .\venv\Scripts\Activate.ps1
+     ```
+   - Windows (cmd):
+     ```
+     venv\Scripts\activate.bat
+     ```
+   - macOS/Linux:
+     ```
+     source venv/bin/activate
+     ```
+4. Install the required packages from `requirements.txt`:
+   ```
+   pip install -r requirements.txt
+   ```
+5. Create the `ForwardBarrels` and `InvertedBarrels` directories in the project root (if they don't already exist).
+6. Run the application:
+   ```
+   python main.py
+   ```
+7. In the app window, click **Index Data** and select the folder containing your JSON dataset (e.g. the `data` folder) to build the forward and inverted indices.
+8. Once indexing finishes, type a search query in the search bar and press **Search** (or hit Enter) to see ranked results.
+
+> When you're done, run `deactivate` to exit the virtual environment.
