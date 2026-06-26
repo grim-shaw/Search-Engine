@@ -1,11 +1,11 @@
 import json
-from typing import List, Tuple, Dict, Any
+from typing import Any, Dict, List, Tuple
 
 
 def search_lexicon(word: str) -> str | None:
     """searches the word in the lexicon and returns its offset"""
 
-    with open('lexicon.txt', "r") as f:
+    with open("lexicon.txt", "r") as f:
         lexicon = json.load(f)
         if word not in lexicon:
             print("Word not found in lexicon!\n")
@@ -25,14 +25,15 @@ def get_word_ids(words_list: List[str]) -> List[Tuple[int, int]]:
     return word_ids
 
 
-def add_new_document_to_results(doc_id: str, documents: Dict, content_hits: Any, content_hit_list: List, title_hits: Any) -> None:
+def add_new_document_to_results(
+    doc_id: str, documents: Dict, content_hits: Any, content_hit_list: List, title_hits: Any
+) -> None:
     """Add new document to documents dictionary"""
 
     # if there are no content hits (means the word only occured in the title) then just add None
     if content_hits > 0:
         # add hits in both title and content and store the hit list for proximity check
-        documents[doc_id] = [title_hits + content_hits,
-                             content_hit_list]
+        documents[doc_id] = [title_hits + content_hits, content_hit_list]
     else:
         documents[doc_id] = [title_hits + content_hits, None]
 
@@ -43,17 +44,13 @@ def calculate_proximity(doc_id: str, documents: Dict, content_hits: Any, content
     # calculate proximity and add weight
     if content_hits > 0:
         if documents[doc_id][1] is not None:
-
             # calculate proximity of each occurance
             for doc_idx in range(1, len(documents[doc_id])):
-
                 prev_word_hit_list = documents[doc_id][doc_idx]
-                idx_range = min(len(prev_word_hit_list),
-                                len(content_hit_list))
+                idx_range = min(len(prev_word_hit_list), len(content_hit_list))
 
                 for location_idx in range(2, idx_range):
-                    proximity = abs(
-                        prev_word_hit_list[location_idx] - content_hit_list[location_idx])
+                    proximity = abs(prev_word_hit_list[location_idx] - content_hit_list[location_idx])
                     if proximity <= 1:
                         documents[doc_id][0] += 10
                     elif proximity <= 10:
@@ -73,8 +70,7 @@ def search_single_word_results(word_id: Tuple[int, int], documents: Dict) -> Non
     barrel_num = int(word_id[0] / 533) + 1
 
     inverted_index_file_path = "./InvertedBarrels/inverted_barrel_"
-    with open(inverted_index_file_path + str(barrel_num) + ".txt", 'r') as inverted_index:
-
+    with open(inverted_index_file_path + str(barrel_num) + ".txt", "r") as inverted_index:
         result_count = 1
 
         # jump to the location of the corresponding word
@@ -84,7 +80,6 @@ def search_single_word_results(word_id: Tuple[int, int], documents: Dict) -> Non
 
         # load the results of the corresponding word and result_count < 31
         while line[0][1] == word_id[0] and result_count < 31:
-
             # destructuring the data
             doc_id = str(line[0][0])
 
@@ -98,17 +93,14 @@ def search_single_word_results(word_id: Tuple[int, int], documents: Dict) -> Non
             # if the document has already been added before then calculate the proximity
             # between the words
             if doc_id in documents:
-
                 # add the new hits to the score
                 documents[doc_id][0] += title_hits + content_hits
 
-                calculate_proximity(doc_id, documents,
-                                    content_hits, content_hit_list)
+                calculate_proximity(doc_id, documents, content_hits, content_hit_list)
 
             # if it hasnt been added then add the data
             else:
-                add_new_document_to_results(
-                    doc_id, documents, content_hits, content_hit_list, title_hits)
+                add_new_document_to_results(doc_id, documents, content_hits, content_hit_list, title_hits)
 
             line = json.loads(inverted_index.readline())
             result_count += 1
@@ -128,7 +120,6 @@ def search_words(words_list: List[str]) -> List[Tuple]:
 
     # convert the documents dictionary into a list and sort in descending order based on
     # the score | higher the score the higher the rank of the document
-    ranked_documents = sorted(list(documents.items()),
-                              key=lambda x: x[1][0], reverse=True)
+    ranked_documents = sorted(list(documents.items()), key=lambda x: x[1][0], reverse=True)
 
     return ranked_documents

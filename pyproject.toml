@@ -1,0 +1,20 @@
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "I",  # isort (import sorting)
+    "W",  # pycodestyle warnings
+]
+# E501: pre-existing long lines (mostly verbose type hints); not auto-fixable
+# and not worth a disruptive reformatting pass right now.
+ignore = ["E501"]
+
+# tkinter's `from tkinter import *` pattern is idiomatic for these UI modules,
+# so star-import lints don't apply there.
+[tool.ruff.lint.per-file-ignores]
+"gui/app.py" = ["F403", "F405"]
+"gui/tkHyperLinkManager.py" = ["F403", "F405"]

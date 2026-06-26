@@ -1,7 +1,6 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
 *.egg-info/
 .eggs/
 .venv/
@@ -13,6 +12,9 @@ ForwardBarrels/
 InvertedBarrels/
 lexicon.txt
 document_index.txt
+
+# Linting
+.ruff_cache/
 
 # OS / editor
 .DS_Store

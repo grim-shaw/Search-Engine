@@ -94,7 +94,7 @@ Search-Engine/
 ├── searcher.py                # Looks up query words and ranks matching documents
 ├── main.py                    # Entry point — launches the GUI
 ├── details.md                 # In-depth design and ranking explanation
-├── pyproject.toml             # Ruff lint/import-sort configuration
+├── pyproject.toml             # Ruff lint/import-sort/format configuration
 ├── .pre-commit-config.yaml    # Pre-commit hook wiring for Ruff
 └── requirements.txt
 ```
@@ -163,7 +163,7 @@ Search-Engine/
 
 ## Development
 
-Linting and import sorting are handled by [Ruff](https://docs.astral.sh/ruff/), enforced automatically on every commit via [pre-commit](https://pre-commit.com/). Both are already included in `requirements.txt`.
+Linting, import sorting, and code formatting are all handled by [Ruff](https://docs.astral.sh/ruff/) (`ruff check` for lint/imports, `ruff format` as a Black-compatible formatter), enforced automatically on every commit via [pre-commit](https://pre-commit.com/). Both are already included in `requirements.txt`.
 
 1. Install the git hook (one-time setup per clone):
 
@@ -171,10 +171,11 @@ Linting and import sorting are handled by [Ruff](https://docs.astral.sh/ruff/), 
    pre-commit install
    ```
 
-2. From then on, `git commit` automatically runs Ruff against staged files and blocks the commit if it finds unfixable issues. You can also run it manually at any time:
+2. From then on, `git commit` automatically runs Ruff's lint and format checks against staged files and blocks the commit if it finds unfixable issues. You can also run it manually at any time:
 
    ```bash
    ruff check .
+   ruff format .
    pre-commit run --all-files
    ```
 
