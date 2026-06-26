@@ -151,7 +151,7 @@ class TalashApp:
         self.index_button = tb.Button(
             self.window,
             text="⚙ Index Data",
-            bootstyle=f"{theme.MUTED}-outline",
+            bootstyle=f"{theme.ACCENT}-outline",
             command=self.on_index_data,
             cursor="hand2",
         )
