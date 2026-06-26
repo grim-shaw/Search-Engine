@@ -45,7 +45,7 @@ A deeper, mechanics-level explanation of indexing and ranking lives in [details.
 - **Text normalization** — stopword removal and stemming (Snowball stemmer) applied identically at index time and query time.
 - **Relevance ranking (IR score)** — title hits are weighted more heavily than content hits, and an additional proximity bonus rewards documents where multi-word queries appear close together.
 - **Incremental, idempotent indexing** — re-running the indexer over the same or overlapping data skips documents that are already indexed instead of duplicating them.
-- **Desktop GUI** — a Tkinter interface for picking a dataset folder to index and for running searches, with clickable result links and timing feedback.
+- **Desktop GUI** — a themed Tkinter/ttkbootstrap interface for picking a dataset folder to index and for running searches, with a Google-style centered search screen, clickable result links, and timing feedback.
 
 ## Architecture
 
@@ -73,12 +73,12 @@ See [details.md](details.md) for the full walkthrough of how each stage works.
 
 ## Tech Stack
 
-| Category | Choice                                                      |
-| -------- | ----------------------------------------------------------- |
-| Language | Python 3                                                    |
-| GUI      | Tkinter                                                     |
-| NLP      | [NLTK](https://www.nltk.org/) (stopwords, Snowball stemmer) |
-| Storage  | Flat JSON / text files (barrels, lexicon, document index)   |
+| Category | Choice                                                                          |
+| -------- | ------------------------------------------------------------------------------- |
+| Language | Python 3                                                                        |
+| GUI      | Tkinter + [ttkbootstrap](https://ttkbootstrap.readthedocs.io/) (themed widgets) |
+| NLP      | [NLTK](https://www.nltk.org/) (stopwords, Snowball stemmer)                     |
+| Storage  | Flat JSON / text files (barrels, lexicon, document index)                       |
 
 ## Project Structure
 
@@ -87,8 +87,9 @@ Search-Engine/
 ├── assets/                    # Static assets (logo, etc.)
 ├── data/                      # Sample JSON corpus
 ├── gui/
-│   ├── app.py                 # Tkinter UI: search box, index button, results pane
-│   └── tkHyperLinkManager.py
+│   ├── app.py                 # TalashApp: window setup, view switching, search/index handlers
+│   ├── components.py          # Reusable widgets: scrollable results list, result links etc.
+│   └── theme.py               # Shared colors, fonts and spacing constants
 ├── indexer.py                 # Builds the forward index from raw JSON articles
 ├── sorter.py                  # Converts the forward index into the inverted index
 ├── searcher.py                # Looks up query words and ranks matching documents
@@ -99,7 +100,7 @@ Search-Engine/
 └── requirements.txt
 ```
 
-`ForwardBarrels/`, `InvertedBarrels/`, `lexicon`, and `document_index.txt` are generated at indexing time and are not checked into the repo.
+`ForwardBarrels/`, `InvertedBarrels/`, `lexicon.txt`, and `document_index.txt` are generated automatically at indexing time (the directories are created on demand) and are not checked into the repo.
 
 ## Getting Started
 
@@ -144,8 +145,6 @@ Search-Engine/
    pip install -r requirements.txt
    ```
 
-5. Create the `ForwardBarrels` and `InvertedBarrels` directories in the project root (if they don't already exist).
-
 > When you're done, run `deactivate` to exit the virtual environment.
 
 ## Usage
@@ -159,7 +158,7 @@ Search-Engine/
 2. In the app window, click **Index Data** and select the folder containing your JSON dataset (e.g. the `data` folder) to build the forward and inverted indices.
 3. Once indexing finishes, type a search query in the search bar and press **Search** (or hit Enter) to see ranked results as clickable links, along with the time the search took.
 
-> **Note:** The project folder must contain the directories named `ForwardBarrels` and `InvertedBarrels`. A portion of the dataset is given in the `data` folder, which contains files in JSON format. Each JSON article is expected to have an `id`, a `url`, a `title`, and a `content` field.
+> **Note:** A portion of the dataset is given in the `data` folder, which contains files in JSON format. Each JSON article is expected to have an `id`, a `url`, a `title`, and a `content` field.
 
 ## Development
 

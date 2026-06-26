@@ -66,6 +66,8 @@ def inverted_index_generator() -> str:
 
     start = datetime.now()
 
+    os.makedirs("./InvertedBarrels", exist_ok=True)
+
     # we find forward barrels present in directory
     barrels = [
         forward_barrel

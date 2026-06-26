@@ -42,6 +42,8 @@ def get_document_index() -> Any:
 def get_forward_barrels() -> List:
     """creates forward barrels files and return list of pointers"""
 
+    os.makedirs("./ForwardBarrels", exist_ok=True)
+
     # create a list of forward barrels and we use 300 barrels
     forward_barrels = []
     for barrel_count in range(1, 301):
@@ -80,7 +82,11 @@ def parse_content(content: Any) -> List:
 
 
 def process_article_title(
-    stemmed_title: Any, forward_dicts: List[Dict], lexicon: Dict[str, List[int]], hashed_id: int, word_count: int
+    stemmed_title: Any,
+    forward_dicts: List[Dict],
+    lexicon: Dict[str, List[int]],
+    hashed_id: int,
+    word_count: int,
 ) -> int:
     """reads words in title and updates forwards dictionaries and lexicon"""
 
@@ -112,7 +118,11 @@ def process_article_title(
 
 
 def process_article_content(
-    stemmed_words: Any, forward_dicts: List[Dict], lexicon: Dict[str, List[int]], hashed_id: int, word_count: int
+    stemmed_words: Any,
+    forward_dicts: List[Dict],
+    lexicon: Dict[str, List[int]],
+    hashed_id: int,
+    word_count: int,
 ) -> int:
     """reads words in content and updates forwards dictionaries and lexicon"""
 
@@ -183,13 +193,13 @@ def generate_forward_index(path_to_data: str) -> List:
     doc_count = 0
     lexicon = get_lexicon()
     word_count = lexicon["word_count"][0]
+    document_index = get_document_index()
+    caught_error = None
 
     try:
         # check the directory for files of json format
         file_names = [pos_json for pos_json in os.listdir(path_to_data) if pos_json.endswith(".json")]
 
-        # create a temporary document index to store record of documents being indexed
-        document_index = get_document_index()
         forward_barrels = get_forward_barrels()
 
         for file_name in file_names:
@@ -200,13 +210,22 @@ def generate_forward_index(path_to_data: str) -> List:
                 loaded_data = json.load(f)
 
             doc_count, word_count = process_loaded_data(
-                loaded_data, forward_dicts, lexicon, document_index, doc_count, word_count
+                loaded_data,
+                forward_dicts,
+                lexicon,
+                document_index,
+                doc_count,
+                word_count,
             )
 
             write_forward_barrels(forward_dicts, forward_barrels)
 
     except Exception as error:
         print(error)
+        caught_error = error
+
+    if caught_error is not None and doc_count == 0:
+        raise caught_error
 
     # dump lexicon program which updates previous lexicon to create new lexicon
     lexicon["word_count"][0] = word_count
